@@ -41,4 +41,32 @@ export const subscriberService = {
             })
         }
     },
+
+    async postAktif(payload) {
+        try {
+            const response = await axios.post(`/Subscription`, payload)
+            return response.data
+        } catch (error) {
+            return Swal.fire({
+                title: 'Error!',
+                text: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        }
+    },
+
+    async deleteAktif(id) {
+        try {
+            const response = await axios.delete(`/Subscription/${id}`)
+            return response.data
+        } catch (error) {
+            return Swal.fire({
+                title: 'Error!',
+                text: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        }
+    },
 }

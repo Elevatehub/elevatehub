@@ -3,11 +3,14 @@
         <h1 class="modal-title fs-5 py-5" id="exampleModalLabel">
             Layanan Fitur
         </h1>
+        <v-btn class="mx-2" color="yellow" v-if="hide && !scraping" @click="addItem()">Tambah Data</v-btn>
+        <br />
         <br />
         <EasyDataTable :rows-per-page="10" show-index border-cell buttons-pagination :headers="headers" :items="items">
             <template #item-operation="item">
                 <div class="operation-wrapper">
-                    <v-icon color="black" @click="updateItem(item)">mdi-update</v-icon>
+                    <v-icon color="green" @click="updateItem(item)">mdi-pencil</v-icon>
+                    <v-icon color="red" @click="deleteItem(item)">mdi-delete</v-icon>
                 </div>
             </template>
         </EasyDataTable>
@@ -82,13 +85,35 @@ export default {
     },
     methods: {
         updateItem(data) {
-            console.log(data)
             this.dialog = true
             this.fullName = data.fullName
             this.balance = data.balance
             this.threads = data.threads
             this.keywords = data.keywords
+            this.edit = true
             this.id = data._id
+        },
+        async deleteItem(id) {
+            this.isLoadingTopics = true
+            try {
+                await subscriberService.deleteAktif(id._id)
+                window.location.reload()
+            } catch (error) {
+                console.error('Error topic in:', error)
+            } finally {
+                this.isLoadingTopics = false
+                window.location.reload()
+            }
+        },
+        async addItem() {
+            this.isLoadingTopics = true
+            this.dialog = true
+            this.fullName = ""
+            this.balance = ""
+            this.threads = ""
+            this.keywords = ""
+            this.edit = false
+
         },
         async getData() {
             const data = await paymentService.subscription()
@@ -105,8 +130,16 @@ export default {
                     balance: Number(this.balance),
                     threads: Number(this.threads),
                     keywords: Number(this.keywords),
+                    image: "-",
+                    keterangan: "-",
+                    isActive: true,
                 }
-                await subscriberService.updatePostAktif(this.id, payload)
+                if (this.edit === true) {
+                    await subscriberService.updatePostAktif(this.id, payload)
+                }
+                if (this.edit === false) {
+                    await subscriberService.postAktif(payload)
+                }
                 window.location.reload()
             } catch (error) {
                 console.error('Error topic in:', error)
