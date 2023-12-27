@@ -172,12 +172,14 @@ export class PaymentService {
   async findOne() {
     const datetime = moment().format('yyyy-MM-DD HH:mm:ss');
     const hash = SHA256(
-      'DS16190' + '10000' + datetime + 'd45f0ff05e0147b7eb7053b0aa1a0224',
+      //'DS16190' + '10000' + datetime + 'd45f0ff05e0147b7eb7053b0aa1a0224',
+      'DS17665' + '10000' + datetime + '3a6c34f1a5af361cea1fad44c78bd47f',
     ).toString();
     const url =
       'https://sandbox.duitku.com/webapi/api/merchant/paymentmethod/getpaymentmethod';
     const data = {
-      merchantcode: 'DS16190',
+      //merchantcode: 'DS16190',
+      //merchantcode: 'DS17665',
       amount: '10000',
       datetime: datetime,
       signature: hash,
@@ -219,13 +221,16 @@ export class PaymentService {
     const url = 'https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry';
     const merchantOrder = await generateUUID();
     const hash = MD5(
-      'DS16190' +
+      //'DS16190' +
+      'DS17665' +
       merchantOrder +
       dataSubscription.balance +
-      'd45f0ff05e0147b7eb7053b0aa1a0224',
+      //'d45f0ff05e0147b7eb7053b0aa1a0224',
+      '3a6c34f1a5af361cea1fad44c78bd47f',
     ).toString();
     const data = {
-      merchantCode: 'DS16190',
+      //merchantCode: 'DS16190',
+      merchantCode: 'DS17665',
       paymentAmount: dataSubscription.balance,
       paymentMethod: paymentMethod,
       merchantOrderId: merchantOrder,
@@ -243,7 +248,7 @@ export class PaymentService {
         },
       ],
       callbackUrl:
-        'https://elevatehub-nest-backend-jipmjlxdrq-uc.a.run.app/Payment/callback',
+        'https://elevatehub-25hymic3rq-uc.a.run.app/Payment/callback',
       returnUrl: 'https://elevatehubvue.web.app/member#topic',
       signature: hash,
       expiryPeriod: 15,
